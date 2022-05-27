@@ -1,17 +1,21 @@
+//create a get request here for the site
 const https = require('https');
 https.get('https://interview.adpeai.com/api/v1/get-task', (res) => {
+    //collect data here 
     let data = '';
     res.on('data', (chunk) => {
         data += chunk;
     })
 
     res.on('end', () => {
+        //parse the data here
         const obj = JSON.parse(data);
         let id = obj.id;
         let operation = obj.operation;
         let left = obj.left;
         let right = obj.right;
         
+        //check to make sure what operation we will perform
         let result = 0;
         if (operation == 'addition')
         {
@@ -39,12 +43,13 @@ https.get('https://interview.adpeai.com/api/v1/get-task', (res) => {
             console.log('operation:',operation,'result:',result);
         }
 
-
+        //package the id and result to post
         const dataToSend = JSON.stringify({
             id: id,
             result: result
         });
         
+        //create post options
         const options = {
           hostname: 'interview.adpeai.com',
           path: '/api/v1/submit-task',
@@ -55,6 +60,7 @@ https.get('https://interview.adpeai.com/api/v1/get-task', (res) => {
           },
         };
         
+        //write adn send post
         const req = https.request(options, res => {
           console.log(`statusCode: ${res.statusCode}`);
         
@@ -63,6 +69,7 @@ https.get('https://interview.adpeai.com/api/v1/get-task', (res) => {
           });
         });
         
+        //error check
         req.on('error', error => {
           console.error(error);
         });
@@ -73,4 +80,4 @@ https.get('https://interview.adpeai.com/api/v1/get-task', (res) => {
     });
 }).on('error', (error) => {
     console.log(error);
-})
+})//error check
